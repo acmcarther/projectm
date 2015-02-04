@@ -48,3 +48,14 @@ gen_ps1() {
 reloadp() {
   . "$(grt)"/.project
 }
+
+project() {
+  . ~/.projects
+  if [ "$1" == "list" ]; then
+    echo "${!projects[@]}"
+  elif [ ${projects[$1]-"unset"} != "unset" ]; then
+    cd ${projects[$1]}
+  else
+    echo "Unknown project: $1"
+  fi
+}
