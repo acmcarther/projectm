@@ -1,0 +1,12 @@
+#! /bin/bash
+
+if [ ! -f "temp_bashrc" ]; then
+  cat "/home/andy/.bashrc" >> "temp_bashrc"
+  cat ".project" >> "temp_bashrc"
+  cat "/home/andy/utils/tools/projectm/init.sh" >> "temp_bashrc"
+  echo "rm temp_bashrc" >> "temp_bashrc"
+  bash --init-file temp_bashrc
+else
+  echo "TEMP_BASHRC EXISTS. EXITING."
+fi
+
