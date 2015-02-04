@@ -46,5 +46,5 @@ gen_ps1() {
 }
 
 reloadp() {
-  . $(grt)/.project
+  . "$(grt)"/.project
 }
