@@ -2,6 +2,6 @@
 
 if [ -f ".project" ]; then
   . .project
-  . /home/andy/utils/tools/projectm/init.sh
+  . ~/utils/tools/projectm/init.sh
 fi
 
