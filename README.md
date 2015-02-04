@@ -5,7 +5,7 @@ It does this by intelligently detecting the "root" of the project, and making va
 It also sources a .project file to find the name of the project and allow definition and presence of project-specific aliases and helpers. All availble only when you'd need them!
 
 # Usage
-* Add ". ~/utils/tools/projectm/init.sh" to your bashrc.
+* Add `. ~/utils/tools/projectm/init.sh` to your bashrc.
   * I strongly doubt it works in other shells, but shouldn't rely on too many bash-isms.
 * In a project you'd like to make visible to ProjectM, ensure you have a git repository and a .project file in the same directory as .git
 * Add `project_name="my project's name here"` to your .project
