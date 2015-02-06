@@ -31,7 +31,7 @@ gen_ps1() {
     fi
 
     # automagic project reloading if the .project file changes
-    export project_hash=$(cat "$(grt)/.project" | hash_util)
+    export project_hash=$(cat "$(grt)/.project" | $(hash_util))
     if [ "$project_hash" != "$old_project_hash" ]; then
       if [ "$PS1" != "$OLD_PS1" ]; then
         echo "Change to .project detected. Reinitializing your powers."
