@@ -53,9 +53,44 @@ project() {
   . ~/.projects
   if [ "$1" == "list" ]; then
     echo "${!projects[@]}"
+  elif [ "$1" == "add" ]; then
+    add_project "$2" "$3"
   elif [ ${projects[$1]-"unset"} != "unset" ]; then
     cd ${projects[$1]}
   else
     echo "Unknown project: $1"
+  fi
+}
+
+add_project() {
+  if [ -n "$2" ]; then
+    if [ -d "$1" ]; then
+      echo "project_name=\"$2\"" >> "$1/.project"
+    else
+      echo "not a dir. unable to create .project here."
+      # not a dir, do nothing and fail below
+    fi
+  fi
+
+  if [ -f "$1/.project" ]; then
+    name=$(get_name "$1/.project")
+    if [ "$name" != "_UNDEFINED" ]; then
+      echo "projects[\"$name\"]=\"$1\"" >> ~/.projects
+      . ~/.projects
+    else
+      echo "No project_name defined for $1"
+    fi
+  else
+    echo "No .project in '$1'"
+  fi
+}
+
+# gets the name of the project specified in the .project path given as the first argument
+get_name() {
+  name=$(bash -c ". $1 && echo \$project_name")
+  if [ -z "$name" ]; then
+    echo "_UNDEFINED"
+  else
+    echo "$name"
   fi
 }
