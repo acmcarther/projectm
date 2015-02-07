@@ -1,0 +1,2 @@
+support per-project credentials - integrate with pass using
+http://askubuntu.com/questions/109413/how-do-i-use-overlayfs or unionfs-fuse or something.
