@@ -94,3 +94,8 @@ get_name() {
     echo "$name"
   fi
 }
+
+p_dir() {
+  . ~/.projects
+  echo ${projects[$1]}
+}
