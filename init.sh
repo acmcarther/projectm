@@ -41,7 +41,7 @@ gen_ps1() {
     export old_project_hash="$project_hash"
 
     curr_path=${curr_path#$git_root}
-    export PS1="[${t_sgu}\D{%T}${t_rst}] $p_chroot${t_y}\u${t_rst} ${t_lr}$project_name${t_rst}@${t_bb}$curr_path${t_rst}> "
+    export PS1="[${t_sgu}\D{%T}${t_rst}] $p_chroot${t_y}\u${t_rst} ${t_lr}$project_name${t_rst}[${t_yu}$(curr_git_branch)${t_rst}]@${t_bb}$curr_path${t_rst}> "
   fi
 }
 
