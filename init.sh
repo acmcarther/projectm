@@ -14,6 +14,13 @@ hash_util() {
 }
 
 gen_ps1() {
+  local t_rst='\[\e[00m\]'
+  local t_sgu='\[\e[04;32m\]'
+  local t_y='\[\e[00;33m\]'
+  local t_bb='\[\e[00;36m\]'
+  local t_yu='\[\e[04;33m\]'
+  local t_lr='\[\e[01;35m\]'
+
   curr_path=$(pwd)
   export project_hash=""
   git_root=$(grt)
@@ -44,7 +51,7 @@ gen_ps1() {
     export old_project_hash="$project_hash"
 
     curr_path=${curr_path#$git_root}
-    export PS1="[${t_sgu}\D{%T}${t_rst}] $p_chroot${t_y}\u${t_rst} ${t_lr}$project_name${t_rst}@${t_bb}$curr_path${t_rst}> "
+    export PS1="[${t_sgu}\D{%T}${t_rst}] $p_chroot${t_y}\u${t_rst} ${t_lr}$project_name${t_rst}[${t_yu}$(curr_git_branch)${t_rst}]@${t_bb}$curr_path${t_rst}> "
   fi
 }
 
@@ -54,6 +61,10 @@ errcho() {
 
 reloadp() {
   . "$(grt)"/.project
+}
+
+p() {
+  project "$@"
 }
 
 project() {
