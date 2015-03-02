@@ -1,6 +1,8 @@
 # this is used for storing the list of known projects as defined in ~/.projects
 declare -A projects
 
+old_project_hash=""
+
 # preserve old PS1 in case we need to drop out of project mode
 OLD_PS1="$PS1"
 
