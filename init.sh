@@ -7,6 +7,11 @@ OLD_PS1="$PS1"
 # so PS1 is actually a function in command mode...
 PROMPT_COMMAND=gen_ps1
 
+gen_completions() {
+  . ~/.projects
+  export completions="${!projects[@]}"
+}
+
 hash_util() {
   ([ -n "$(which sha256sum)" ] && echo "sha256sum") ||
   ([ -n "$(which md5sum)" ] && echo "md5sum") ||
@@ -133,3 +138,11 @@ p_dir() {
   . ~/.projects
   echo ${projects[$1]}
 }
+
+_project_complete() {
+  gen_completions
+  local word="${COMP_WORDS[COMP_CWORD]}"
+  COMPREPLY=( $(compgen -W "$completions" -- "$word"))
+}
+
+complete -F _project_complete p
