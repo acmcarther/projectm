@@ -9,7 +9,7 @@ PROMPT_COMMAND=gen_ps1
 
 gen_completions() {
   . ~/.projects
-  export completions="${!projects[@]}"
+  echo "${!projects[@]}"
 }
 
 hash_util() {
@@ -140,7 +140,7 @@ p_dir() {
 }
 
 _project_complete() {
-  gen_completions
+  local completions="$(gen_completions)"
   local word="${COMP_WORDS[COMP_CWORD]}"
   COMPREPLY=( $(compgen -W "$completions" -- "$word"))
 }
