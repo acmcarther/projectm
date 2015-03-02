@@ -13,6 +13,10 @@ hash_util() {
   (echo "wc -l") # well if you don't have md5sum... not much I can do.
 }
 
+curr_git_branch() {
+  echo $(git rev-parse --abbrev-ref HEAD)
+}
+
 gen_ps1() {
   local t_rst='\[\e[00m\]'
   local t_sgu='\[\e[04;32m\]'
