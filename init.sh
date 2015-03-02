@@ -18,7 +18,7 @@ curr_git_branch() {
 }
 
 grt() {
-  echo $(git rev-parse --show-toplevel)
+  echo $(git rev-parse --show-toplevel &2>/dev/null || $pwd)
 }
 
 gen_ps1() {
