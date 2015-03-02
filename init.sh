@@ -17,6 +17,10 @@ curr_git_branch() {
   echo $(git rev-parse --abbrev-ref HEAD)
 }
 
+grt() {
+  echo $(git rev-parse --show-toplevel)
+}
+
 gen_ps1() {
   local t_rst='\[\e[00m\]'
   local t_sgu='\[\e[04;32m\]'
