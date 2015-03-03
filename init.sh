@@ -33,6 +33,16 @@ is_projectm_dir() {
   [[ -d "$(grt)/.git" && -f "$(grt)/.project" ]]
 }
 
+is_reload_necessary() {
+  local project_hash="$(cat "$(grt)/.project" | $(hash_util))"
+  local reload="no"
+  if [ "$project_hash" != "$old_project_hash" ]; then
+    reload="yes"
+  fi
+  old_project_hash="$project_hash"
+  [ "$reload" = "yes" ]
+}
+
 gen_ps1() {
   local t_rst='\[\e[00m\]'
   local t_sgu='\[\e[04;32m\]'
@@ -41,33 +51,26 @@ gen_ps1() {
   local t_yu='\[\e[04;33m\]'
   local t_lr='\[\e[01;35m\]'
 
-  curr_path=$(pwd)
-  export project_hash=""
+  project_hash=""
 
   if is_projectm_dir; then
-    # same idea as above, only inform the user on a rising edge out_of_project -> in_project
-    if ! $project_loaded; then
-      echo ".project detected. Your powers grow!"
-    fi
-
-    # automagic project reloading if the .project file changes
-    project_hash=$(cat "$(grt)/.project" | $(hash_util))
-    if [ "$project_hash" != "$old_project_hash" ]; then
+    if is_reload_necessary; then
       if $project_loaded; then
         echo "Change to .project detected. Reinitializing your powers."
+      else
+        echo ".project detected. Your powers grow!"
       fi
       reloadp
       project_loaded=true
     fi
-    old_project_hash="$project_hash"
 
-    git_root=$(grt)
-    curr_path=${curr_path#$git_root}
+    curr_path="$(pwd)"
+    git_root="$(grt)"
+    curr_path="${curr_path#$git_root}"
     PS1="[${t_sgu}\D{%T}${t_rst}] $p_chroot${t_y}\u${t_rst} ${t_lr}$project_name${t_rst}[${t_yu}$(curr_git_branch)${t_rst}]@${t_bb}$curr_path${t_rst}> "
   else
     # this check is because we never really remove ourselves from PROMPT_COMMAND.
-    # so this check is done on every prompt.
-    # but we only want to inform the user on the falling edge of in_project -> out_of_project
+    # so this check is done on every prompt. only take action when leaving a project.
     if $project_loaded; then
       echo "No git present to root against, or no .project present. Your powers weaken!"
       old_project_hash=""
