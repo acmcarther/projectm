@@ -23,12 +23,12 @@ If this is disagreeable, you can provide an alternative ProjectM PS1 string by d
 * `${curr_path}`: relative path from the root of the project's git repositorty
 * And of course, any other visible variables or functions. `\u` for username, `\D{%T}` for time in hh:mm:ss, etc
 * And colors!
-    `t_sgu`: green text, with underline
-    `t_y`: yellow text
-    `t_bb`: light blue text
-    `t_yu`: yellow text, with underline
-    `t_lr`: lavender text, bold
-    `t_rst`: reset color/style to defaults
+  * `t_sgu`: green text, with underline
+  * `t_y`: yellow text
+  * `t_bb`: light blue text
+  * `t_yu`: yellow text, with underline
+  * `t_lr`: lavender text, bold
+  * `t_rst`: reset color/style to defaults
 
 ## Todo
 * Per-project notes and todo lists.
