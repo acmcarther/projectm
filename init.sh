@@ -1,6 +1,8 @@
 # this is used for storing the list of known projects as defined in ~/.projects
 declare -A projects
 
+. ~/.projectmrc
+
 old_project_hash=""
 project_loaded=false
 
@@ -67,7 +69,11 @@ gen_ps1() {
     curr_path="$(pwd)"
     git_root="$(grt)"
     curr_path="${curr_path#$git_root}"
-    PS1="[${t_sgu}\D{%T}${t_rst}] $p_chroot${t_y}\u${t_rst} ${t_lr}$project_name${t_rst}[${t_yu}$(curr_git_branch)${t_rst}]@${t_bb}$curr_path${t_rst}> "
+    if [ "$(type -t "PROJECTM_PS1")" = "function" ]; then
+      PS1="$(PROJECTM_PS1)"
+    else
+      PS1="[${t_sgu}\D{%T}${t_rst}] $p_chroot${t_y}\u${t_rst} ${t_lr}$project_name${t_rst}[${t_yu}$(curr_git_branch)${t_rst}]@${t_bb}$curr_path${t_rst}> "
+    fi
   else
     # this check is because we never really remove ourselves from PROMPT_COMMAND.
     # so this check is done on every prompt. only take action when leaving a project.
