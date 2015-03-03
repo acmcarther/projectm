@@ -2,6 +2,7 @@
 declare -A projects
 
 old_project_hash=""
+project_loaded=false
 
 # preserve old PS1 in case we need to drop out of project mode
 OLD_PS1="$PS1"
@@ -9,7 +10,7 @@ OLD_PS1="$PS1"
 # so PS1 is actually a function in command mode...
 PROMPT_COMMAND=gen_ps1
 
-gen_completions() {
+list_project_names() {
   . ~/.projects
   echo "${!projects[@]}"
 }
@@ -28,6 +29,10 @@ grt() {
   echo $(git rev-parse --show-toplevel 2>/dev/null)
 }
 
+is_projectm_dir() {
+  [[ -d "$(grt)/.git" && -f "$(grt)/.project" ]]
+}
+
 gen_ps1() {
   local t_rst='\[\e[00m\]'
   local t_sgu='\[\e[04;32m\]'
@@ -38,35 +43,37 @@ gen_ps1() {
 
   curr_path=$(pwd)
   export project_hash=""
-  git_root=$(grt)
 
-  if [[ ! -d "$git_root/.git" || ! -f "$git_root/.project" ]]; then
-    # this check is because we never really remove ourselves from PROMPT_COMMAND.
-    # so this check is done on every prompt.
-    # but we only want to inform the user on the falling edge of in_project -> out_of_project
-    if [ "$PS1" != "$OLD_PS1" ]; then
-      echo "No git present to root against, or no .project present. Your powers weaken!"
-      export old_project_hash=""
-      export PS1="$OLD_PS1"
-    fi
-  else
+  if is_projectm_dir; then
     # same idea as above, only inform the user on a rising edge out_of_project -> in_project
-    if [ "$PS1" = "$OLD_PS1" ]; then
+    if ! $project_loaded; then
       echo ".project detected. Your powers grow!"
     fi
 
     # automagic project reloading if the .project file changes
-    export project_hash=$(cat "$(grt)/.project" | $(hash_util))
+    project_hash=$(cat "$(grt)/.project" | $(hash_util))
     if [ "$project_hash" != "$old_project_hash" ]; then
-      if [ "$PS1" != "$OLD_PS1" ]; then
+      if $project_loaded; then
         echo "Change to .project detected. Reinitializing your powers."
       fi
       reloadp
+      project_loaded=true
     fi
-    export old_project_hash="$project_hash"
+    old_project_hash="$project_hash"
 
+    git_root=$(grt)
     curr_path=${curr_path#$git_root}
-    export PS1="[${t_sgu}\D{%T}${t_rst}] $p_chroot${t_y}\u${t_rst} ${t_lr}$project_name${t_rst}[${t_yu}$(curr_git_branch)${t_rst}]@${t_bb}$curr_path${t_rst}> "
+    PS1="[${t_sgu}\D{%T}${t_rst}] $p_chroot${t_y}\u${t_rst} ${t_lr}$project_name${t_rst}[${t_yu}$(curr_git_branch)${t_rst}]@${t_bb}$curr_path${t_rst}> "
+  else
+    # this check is because we never really remove ourselves from PROMPT_COMMAND.
+    # so this check is done on every prompt.
+    # but we only want to inform the user on the falling edge of in_project -> out_of_project
+    if $project_loaded; then
+      echo "No git present to root against, or no .project present. Your powers weaken!"
+      old_project_hash=""
+      PS1="$OLD_PS1"
+      project_loaded=false
+    fi
   fi
 }
 
@@ -85,7 +92,7 @@ p() {
 project() {
   . ~/.projects
   if [ "$1" == "list" ]; then
-    echo "${!projects[@]}"
+    list_project_names
   elif [ "$1" == "add" ]; then
     add_project "$2" "$3"
   elif [ "$1" == "import" ]; then
@@ -142,7 +149,7 @@ p_dir() {
 }
 
 _project_complete() {
-  local completions="$(gen_completions)"
+  local completions="$(list_project_names)"
   local word="${COMP_WORDS[COMP_CWORD]}"
   COMPREPLY=( $(compgen -W "$completions" -- "$word"))
 }
