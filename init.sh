@@ -108,29 +108,27 @@ project() {
 # $1 is the directory of the project to be added
 add_project() {
   if [ -n "$2" ]; then
-    if [ -d "$1" ]; then
-      echo "project_name=\"$2\"" >> "$1/.project"
-    else
-      errcho "not a dir. unable to create .project here."
-      # not a dir, do nothing and fail below
-    fi
+    [ -d "$1" ] || (
+      errcho "not a dir. unable to create .project here."; return 0
+    )
+    echo "project_name=\"$2\"" >> "$1/.project"
   fi
 
-  if [ -d "$1/.git" ]; then
-    if [ -f "$1/.project" ]; then
-      name=$(get_name "$1/.project")
-      if [ "$name" != "_UNDEFINED" ]; then
-        echo "projects[\"$name\"]=\"$1\"" >> ~/.projects
-        . ~/.projects
-      else
-        errcho "No project_name defined for $1"
-      fi
-    else
-      errcho "No .project in '$1'"
-    fi
-  else
-    errcho "No .git in '$1'"
-  fi
+  [ -d "$1/.git" ] || (
+    errcho "No .git in '$1'"; return 0
+  )
+
+  [ -f "$1/.project" ] || (
+    errcho "No .project in '$1'"; return 0
+  )
+
+  name=$(get_name "$1/.project")
+  [ "$name" != "_UNDEFINED" ] || (
+    errcho "No project_name defined for $1"; return 0
+  )
+
+  echo "projects[\"$name\"]=\"$1\"" >> ~/.projects
+  . ~/.projects
 }
 
 # gets the name of the project specified in the .project path given as the first argument
