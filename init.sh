@@ -1,7 +1,9 @@
 # this is used for storing the list of known projects as defined in ~/.projects
 declare -A projects
 
-. ~/.projectmrc
+if [ -f "~/.projectmrc" ]; then
+  . ~/.projectmrc
+fi
 
 old_project_hash=""
 project_loaded=false
