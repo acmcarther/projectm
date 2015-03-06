@@ -15,6 +15,7 @@ OLD_PS1="$PS1"
 PROMPT_COMMAND=gen_ps1
 
 list_project_names() {
+  declare -A projects
   . ~/.projects
   echo "${!projects[@]}"
 }
@@ -101,6 +102,7 @@ p() {
 }
 
 project() {
+  declare -A projects
   . ~/.projects
   if [ "$1" == "list" ]; then
     list_project_names
@@ -143,6 +145,7 @@ add_project() {
   fi
 
   echo "projects[\"$name\"]=\"$1\"" >> ~/.projects
+  declare -A projects
   . ~/.projects
 }
 
@@ -157,6 +160,7 @@ get_name() {
 }
 
 p_dir() {
+  declare -A projects
   . ~/.projects
   echo ${projects[$1]}
 }
