@@ -140,7 +140,7 @@ add_project() {
   fi
 
   name=$(get_name "$1/.project")
-  if [ "$name" != "_UNDEFINED" ]; then
+  if [ "$name" == "_UNDEFINED" ]; then
     errcho "No project_name defined for $1"; return 1
   fi
 
