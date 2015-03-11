@@ -65,6 +65,8 @@ gen_ps1() {
       else
         echo ".project detected. Your powers grow!"
       fi
+      unset project_name
+      unset project_name_color
       reloadp
       project_loaded=true
     fi
@@ -75,7 +77,8 @@ gen_ps1() {
     if [ "$(type -t "PROJECTM_PS1")" = "function" ]; then
       PS1="$(PROJECTM_PS1)"
     else
-      PS1="[${t_sgu}\D{%T}${t_rst}] $p_chroot${t_y}\u${t_rst} ${t_lr}$project_name${t_rst}[${t_yu}$(curr_git_branch)${t_rst}]@${t_bb}$curr_path${t_rst}> "
+      local colored_pname="${project_name_color-$t_lr}$project_name${t_rst}"
+      PS1="[${t_sgu}\D{%T}${t_rst}] $p_chroot${t_y}\u${t_rst} $colored_pname[${t_yu}$(curr_git_branch)${t_rst}]@${t_bb}$curr_path${t_rst}> "
     fi
   else
     # this check is because we never really remove ourselves from PROMPT_COMMAND.
